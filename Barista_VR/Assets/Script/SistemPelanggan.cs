@@ -36,6 +36,7 @@ public class SistemPelanggan : MonoBehaviour
         {
             canvasResep.SetActive(true);
             Debug.Log("Resep ditampilkan!");
+            TutorialManager.instance.LaporSelesai(0);
         }
     }
 }

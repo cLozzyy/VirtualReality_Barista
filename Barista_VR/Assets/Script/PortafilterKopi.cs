@@ -29,7 +29,8 @@ public class PortafilterKopi : MonoBehaviour
             {
                 Debug.LogWarning("Objek Layar Timbangan belum dimasukkan ke script!");
             }
-
+                
+            TutorialManager.instance.LaporSelesai(2);
             Debug.Log("Sukses! Kopi dituang. Total: " + totalBeratKopi + " gram");
         }
         else

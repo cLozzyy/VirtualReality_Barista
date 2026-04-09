@@ -14,7 +14,7 @@ public class GelasKopi : MonoBehaviour
     public float durasiIsi = 3f;    // Waktu pengisian (detik)
 
     private bool sedangIsi = false; // Mencegah isi ulang pas lagi proses
-    private bool sudahPenuh = false;
+    public bool sudahPenuh = false;
 
     void Start()
     {
@@ -81,5 +81,19 @@ public class GelasKopi : MonoBehaviour
         {
             TutorialManager.instance.LaporSelesai(5);
         }
+    }
+
+    // Fungsi untuk membuang air kopi dan mereset gelas
+    public void KosongkanGelas()
+    {
+        sudahPenuh = false;
+        sedangIsi = false;
+
+        if (rendererAir != null) rendererAir.enabled = false; // Matikan visual air
+
+        // Kempeskan ukurannya jadi 0 lagi
+        Vector3 skalaAwal = pivotAirKopi.localScale;
+        skalaAwal.y = 0f;
+        pivotAirKopi.localScale = skalaAwal;
     }
 }

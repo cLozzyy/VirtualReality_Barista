@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using TMPro;
 public class SistemPelanggan : MonoBehaviour
 {
     [Header("Pergerakan")]
@@ -13,7 +13,7 @@ public class SistemPelanggan : MonoBehaviour
     public Animator animator; 
 
     private bool sudahDiKasir = false;
-
+    public TextMeshPro teksPesanan;
     void Start()
     {
         if (animator == null)
@@ -75,5 +75,19 @@ public class SistemPelanggan : MonoBehaviour
             Debug.Log("Resep ditampilkan!");
             TutorialManager.instance.LaporSelesai(0);
         }
+    }
+    public void PesananSelesai()
+    {
+        // Ganti tulisan Americano jadi Terima Kasih
+        if (teksPesanan != null)
+        {
+            teksPesanan.text = "Terima Kasih!";
+            teksPesanan.color = Color.green; // Biar estetik dikit
+        }
+
+        // Matikan papan layar resep di monitor
+        if (canvasResep != null) canvasResep.SetActive(false);
+
+        Debug.Log("Pelanggan puas!");
     }
 }

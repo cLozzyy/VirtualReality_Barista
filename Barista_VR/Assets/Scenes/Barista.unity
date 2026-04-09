@@ -171,6 +171,11 @@ Animator:
   m_CorrespondingSourceObject: {fileID: 5686134208192617028, guid: 1fd3a7c43c8190f4d8c167ebde694364, type: 3}
   m_PrefabInstance: {fileID: 1136465297}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &12250095 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5195768160251915419, guid: f38a7aa92864c0a4c9b85b17d68b01de, type: 3}
+  m_PrefabInstance: {fileID: 1759128262}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &48386344
 GameObject:
   m_ObjectHideFlags: 0
@@ -2028,6 +2033,171 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bac57a7e197f33846a88a72f8d5e041b, type: 3}
+--- !u!1 &454395929
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 454395930}
+  - component: {fileID: 454395933}
+  - component: {fileID: 454395932}
+  - component: {fileID: 454395931}
+  m_Layer: 0
+  m_Name: SocketCupFilled
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &454395930
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 454395929}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: -0.7071068}
+  m_LocalPosition: {x: -0.156, y: 0.09, z: 0.012}
+  m_LocalScale: {x: 1.3099998, y: 1.441, z: 1.3099998}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 12250095}
+  m_LocalEulerAnglesHint: {x: 0, y: -180, z: 0}
+--- !u!114 &454395931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 454395929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a5ce5e898c49e3498ae968e33a865d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PiringSaji
+  socketPiring: {fileID: 454395932}
+  pelanggan: {fileID: 1290324462}
+--- !u!114 &454395932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 454395929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60523e0647cc6ab43acc73cb266a32a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.XR.Interaction.Toolkit::UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor
+  m_InteractionManager: {fileID: 130009822}
+  m_InteractionLayers:
+    m_Bits: 536870912
+  m_Handedness: 0
+  m_AttachTransform: {fileID: 0}
+  m_KeepSelectedTargetValid: 1
+  m_DisableVisualsWhenBlockedInGroup: 1
+  m_StartingSelectedInteractable: {fileID: 0}
+  m_StartingTargetFilter: {fileID: 0}
+  m_AutoFindParentInteractableInHierarchy: 0
+  m_ParentInteractableObject: {fileID: 0}
+  m_HoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectEntered:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 837650828}
+        m_TargetAssemblyTypeName: TutorialManager, Assembly-CSharp
+        m_MethodName: LaporSelesai
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 5
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1287453798}
+        m_TargetAssemblyTypeName: MesinEspresso, Assembly-CSharp
+        m_MethodName: CekDanBikinKopi
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: MesinEspresso, Assembly-CSharp
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 454395931}
+        m_TargetAssemblyTypeName: PiringSaji, Assembly-CSharp
+        m_MethodName: CekPesananMasuk
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_SelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_StartingHoverFilters: []
+  m_StartingSelectFilters: []
+  m_ShowInteractableHoverMeshes: 1
+  m_InteractableHoverMeshMaterial: {fileID: 0}
+  m_InteractableCantHoverMeshMaterial: {fileID: 0}
+  m_SocketActive: 1
+  m_InteractableHoverScale: 1
+  m_RecycleDelayTime: 1
+  m_HoverSocketSnapping: 0
+  m_SocketSnappingRadius: 0.1
+  m_SocketScaleMode: 0
+  m_FixedScale: {x: 1, y: 1, z: 1}
+  m_TargetBoundsSize: {x: 1, y: 1, z: 1}
+--- !u!135 &454395933
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 454395929}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &502596342 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b2f668468a1ab546aa0fd1fa1f26217, type: 3}
@@ -2632,6 +2802,7 @@ MonoBehaviour:
   - Ambil Tamper dan tekan kopi di Portafilter sampai padat.
   - Pasang Portafilter ke mesin kopi.
   - Taruh gelas di bawah mesin.
+  - Sajikan kopi ke piring di depan pelanggan.
   prefabEfekPetunjuk: {fileID: 130578850295889416, guid: b0f7df2666274a342b4831e0dba78106, type: 3}
   targetBarangPetunjuk:
   - {fileID: 1290324466}
@@ -2640,6 +2811,7 @@ MonoBehaviour:
   - {fileID: 1092354709}
   - {fileID: 991884433}
   - {fileID: 1736412534}
+  - {fileID: 12250095}
 --- !u!4 &837650829
 Transform:
   m_ObjectHideFlags: 0
@@ -3957,6 +4129,8 @@ MonoBehaviour:
   titikKasir: {fileID: 2110114664}
   kecepatan: 1.5
   canvasResep: {fileID: 1740168879}
+  animator: {fileID: 0}
+  teksPesanan: {fileID: 531630421}
 --- !u!136 &1290324463
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -5372,6 +5546,7 @@ MonoBehaviour:
   pivotAirKopi: {fileID: 508461568}
   targetPenuhY: 1
   durasiIsi: 3
+  sudahPenuh: 0
 --- !u!1 &1740168879
 GameObject:
   m_ObjectHideFlags: 0
@@ -5547,6 +5722,66 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a3051c696c83442f8b9a1c115ffa2359, type: 3}
+--- !u!1001 &1759128262
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4850591416543999521, guid: f38a7aa92864c0a4c9b85b17d68b01de, type: 3}
+      propertyPath: m_Name
+      value: Cafe_Plate_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5195768160251915419, guid: f38a7aa92864c0a4c9b85b17d68b01de, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.1647359
+      objectReference: {fileID: 0}
+    - target: {fileID: 5195768160251915419, guid: f38a7aa92864c0a4c9b85b17d68b01de, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.0778979
+      objectReference: {fileID: 0}
+    - target: {fileID: 5195768160251915419, guid: f38a7aa92864c0a4c9b85b17d68b01de, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -6.939168
+      objectReference: {fileID: 0}
+    - target: {fileID: 5195768160251915419, guid: f38a7aa92864c0a4c9b85b17d68b01de, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5195768160251915419, guid: f38a7aa92864c0a4c9b85b17d68b01de, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5195768160251915419, guid: f38a7aa92864c0a4c9b85b17d68b01de, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5195768160251915419, guid: f38a7aa92864c0a4c9b85b17d68b01de, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5195768160251915419, guid: f38a7aa92864c0a4c9b85b17d68b01de, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5195768160251915419, guid: f38a7aa92864c0a4c9b85b17d68b01de, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5195768160251915419, guid: f38a7aa92864c0a4c9b85b17d68b01de, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 5195768160251915419, guid: f38a7aa92864c0a4c9b85b17d68b01de, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 454395930}
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f38a7aa92864c0a4c9b85b17d68b01de, type: 3}
 --- !u!1001 &1763737658
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8396,3 +8631,4 @@ SceneRoots:
   - {fileID: 272640052}
   - {fileID: 1758896620}
   - {fileID: 837650829}
+  - {fileID: 1759128262}

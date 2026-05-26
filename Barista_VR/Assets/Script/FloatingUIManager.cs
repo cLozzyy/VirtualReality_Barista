@@ -2,15 +2,22 @@ using UnityEngine;
 
 public class FloatingUIManager : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public Transform targetCamera;
+    public float followDistance = 1.5f;
+    public float followSpeed = 5f;
+    public float heightOffset = 0f;
 
-    // Update is called once per frame
-    void Update()
+    private void LateUpdate()
     {
-        
+        if (targetCamera == null) return;
+
+        Vector3 targetPosition = targetCamera.position + (targetCamera.forward * followDistance);
+        targetPosition.y = targetCamera.position.y + heightOffset;
+
+        transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * followSpeed);
+
+        Vector3 lookAtPosition = new Vector3(targetCamera.position.x, transform.position.y, targetCamera.position.z);
+        transform.LookAt(lookAtPosition);
+        transform.Rotate(0, 180, 0);
     }
 }

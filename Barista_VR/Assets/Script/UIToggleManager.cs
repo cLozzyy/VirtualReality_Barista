@@ -25,4 +25,4 @@ public class UIToggleManager : MonoBehaviour
             uiPanel.SetActive(!uiPanel.activeSelf);
         }
     }
-}
+}   

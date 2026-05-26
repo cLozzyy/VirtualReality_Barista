@@ -3,9 +3,9 @@ using UnityEngine;
 public class FloatingUIManager : MonoBehaviour
 {
     public Transform targetCamera;
-    public float followDistance = 1.5f;
+    public float followDistance = 10f;
     public float followSpeed = 5f;
-    public float heightOffset = 0f;
+    public float heightOffset = -5f;
 
     private void LateUpdate()
     {

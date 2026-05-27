@@ -1,60 +1,27 @@
 using UnityEngine;
 
-// Baris ini bikin Unity otomatis nambahin AudioSource kalau di objeknya belum ada
-[RequireComponent(typeof(AudioSource))]
+
 public class MesinEspresso : MonoBehaviour
 {
     [Header("Socket Mesin")]
-    public UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor socketPortafilter;
-    public UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor socketGelas;
+    public UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor socketPortafilter; // Socket tempat portafilter nempel
+    public UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor socketGelas;       // Socket tempat gelas ditaruh
 
-    // Variabel AudioClip dihapus biar Inspector lebih bersih
-    // Kita cuma butuh reference ke AudioSource-nya aja
-    private AudioSource suaraMesin;
-
-    private void Awake()
-    {
-        // Otomatis ngambil komponen AudioSource yang nempel di objek mesin ini
-        suaraMesin = GetComponent<AudioSource>();
-    }
-
+    // Fungsi ini akan dipanggil otomatis setiap kali ada benda masuk ke socket
     public void CekDanBikinKopi()
     {
+        // Cek: Apakah Portafilter ADA isinya? DAN Gelas ADA isinya?
         if (socketPortafilter.hasSelection && socketGelas.hasSelection)
         {
-            GameObject objekPortafilter = socketPortafilter.firstInteractableSelected.transform.gameObject;
+            // Ambil data objek gelas yang sedang menempel di socket
             GameObject objekGelas = socketGelas.firstInteractableSelected.transform.gameObject;
 
-            PortafilterKopi scriptPorta = objekPortafilter.GetComponent<PortafilterKopi>();
-
-            if (scriptPorta != null && scriptPorta.portaFilter_Coffee != null && scriptPorta.portaFilter_Coffee.activeSelf)
+            // Cari script GelasKopi di gelas tersebut dan suruh isi air
+            GelasKopi scriptGelas = objekGelas.GetComponent<GelasKopi>();
+            if (scriptGelas != null)
             {
-                // Langsung play aja AudioSource-nya
-                if (suaraMesin != null)
-                {
-                    suaraMesin.Play();
-                }
-
-                GelasKopi scriptGelas = objekGelas.GetComponent<GelasKopi>();
-                if (scriptGelas != null)
-                {
-                    scriptGelas.MulaiIsiAir();
-                }
-
-                Debug.Log("Mesin menyala! Mengekstrak kopi...");
+                scriptGelas.MulaiIsiAir();
             }
-            else
-            {
-                Debug.Log("Mesin tidak menyala: Portafilter belum diisi bubuk kopi!");
-            }
-        }
-    }
-
-    public void HentikanMesin()
-    {
-        if (suaraMesin != null && suaraMesin.isPlaying)
-        {
-            suaraMesin.Stop();
         }
     }
 }

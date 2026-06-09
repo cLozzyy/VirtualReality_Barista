@@ -1,6 +1,5 @@
 using UnityEngine;
 using TMPro;
-using System.Collections;
 
 public class TutorialManager : MonoBehaviour
 {
@@ -18,11 +17,8 @@ public class TutorialManager : MonoBehaviour
     public Transform[] targetBarangPetunjuk;
 
     private GameObject efekAktif;
-    private Transform targetMengikuti;
+    private Transform targetMengikuti; // Variabel baru untuk nyimpen target saat ini
     private int stepSekarang = 0;
-
-    // TAMBAHAN: Buat nyimpen status Coroutine biar bisa disetop saat ganti step
-    private Coroutine audioLoopCoroutine;
 
     private void Awake()
     {
@@ -34,6 +30,7 @@ public class TutorialManager : MonoBehaviour
         if (prefabEfekPetunjuk != null)
         {
             efekAktif = Instantiate(prefabEfekPetunjuk);
+            // PENTING: Jangan jadikan child siapa-siapa. Biarkan bebas di luar.
             efekAktif.transform.SetParent(null);
         }
         UpdateTeksDanPetunjuk();
@@ -41,8 +38,10 @@ public class TutorialManager : MonoBehaviour
 
     private void Update()
     {
+        // Setiap frame (saat game jalan), paksa partikel pindah ke atas barang target
         if (efekAktif != null && efekAktif.activeSelf && targetMengikuti != null)
         {
+            // Mengikuti posisi barang + naik 15 cm (0.15f) ke atas
             efekAktif.transform.position = targetMengikuti.position + new Vector3(0, 0.15f, 0);
         }
     }
@@ -58,34 +57,22 @@ public class TutorialManager : MonoBehaviour
 
     private void UpdateTeksDanPetunjuk()
     {
-        // PENTING: Stop loop suara sebelumnya tiap kali ganti barang/step
-        if (audioLoopCoroutine != null)
-        {
-            StopCoroutine(audioLoopCoroutine);
-            audioLoopCoroutine = null;
-        }
-
         if (stepSekarang < daftarInstruksi.Length)
         {
             teksTutorial.text = daftarInstruksi[stepSekarang];
 
             if (efekAktif != null && stepSekarang < targetBarangPetunjuk.Length)
             {
+                // Set barang mana yang harus dibuntuti sekarang
                 targetMengikuti = targetBarangPetunjuk[stepSekarang];
 
                 if (targetMengikuti != null)
                 {
                     efekAktif.SetActive(true);
 
+                    // Mainkan ulang partikelnya biar seger
                     ParticleSystem ps = efekAktif.GetComponent<ParticleSystem>();
                     if (ps != null) ps.Play();
-
-                    AudioSource audioEfek = efekAktif.GetComponent<AudioSource>();
-                    if (audioEfek != null)
-                    {
-                        // Mulai looping 3 detik dan simpan di variabel audioLoopCoroutine
-                        audioLoopCoroutine = StartCoroutine(LoopManualTigaDetik(audioEfek, 3.0f));
-                    }
                 }
                 else
                 {
@@ -97,20 +84,6 @@ public class TutorialManager : MonoBehaviour
         {
             teksTutorial.text = "Bagus! Kamu sudah siap melayani pelanggan sungguhan!";
             if (efekAktif != null) efekAktif.SetActive(false);
-        }
-    }
-
-    // FUNGSI BARU: Looping manual khusus 3 detik pertama
-    private IEnumerator LoopManualTigaDetik(AudioSource audio, float durasiLoop)
-    {
-        // Cek terus selama efek debu ini statusnya aktif di game
-        while (efekAktif != null && efekAktif.activeInHierarchy)
-        {
-            audio.time = 0f; // Paksa balikin suara ke detik 0
-            audio.Play();    // Mainkan suaranya
-
-            // Tunggu 3 detik sebelum kode muter balik ke atas (ngulang ke detik 0 lagi)
-            yield return new WaitForSeconds(durasiLoop);
         }
     }
 }

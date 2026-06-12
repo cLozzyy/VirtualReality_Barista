@@ -15,15 +15,16 @@ public class ToggleInteractor : MonoBehaviour
 
     void Update()
     {
-        if (Keyboard.current.fKey.wasPressedThisFrame)  // ← ganti ini
+        if (Keyboard.current.fKey.wasPressedThisFrame)
         {
             bool nearAktif = nearInteractorKanan.enabled;
 
             nearInteractorKanan.enabled = !nearAktif;
             farInteractorKanan.enabled = nearAktif;
-
             nearInteractorKiri.enabled = !nearAktif;
             farInteractorKiri.enabled = nearAktif;
+
+            Debug.Log($"Near: {nearInteractorKanan.enabled} | Far: {farInteractorKanan.enabled}");
         }
     }
 }

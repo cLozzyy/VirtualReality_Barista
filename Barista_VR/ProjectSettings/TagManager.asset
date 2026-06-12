@@ -13,6 +13,9 @@ TagManager:
   - Timbangan
   - Cup
   - TitikKasir
+  - PiringSaji
+  - Sendok
+  - MesinEspresso
   layers:
   - Default
   - TransparentFX

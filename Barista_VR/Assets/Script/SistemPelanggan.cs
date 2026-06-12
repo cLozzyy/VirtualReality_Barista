@@ -48,13 +48,51 @@ public class SistemPelanggan : MonoBehaviour
         sudahPesan = false;
         sedangKeluar = false;
 
+        // --- 1. CARI NAVIGASI ---
         if (titikKasir == null)
         {
             GameObject go = GameObject.FindWithTag("TitikKasir");
             if (go != null) titikKasir = go.transform;
         }
+        if (titikKeluar == null)
+        {
+            GameObject goKeluar = GameObject.Find("TitikKeluar");
+            if (goKeluar != null) titikKeluar = goKeluar.transform;
+        }
 
-        if (panelCanvasResep != null) panelCanvasResep.SetActive(false);
+        // Cari Alat Barista Otomatis biar Particle bisa muncul
+        if (objekPortafilter == null) objekPortafilter = GameObject.FindWithTag("Portafilter")?.transform;
+        if (objekSendokKopi == null) objekSendokKopi = GameObject.FindWithTag("Sendok")?.transform;
+        if (objekToplesKopi == null) objekToplesKopi = GameObject.FindWithTag("ToplesKopi")?.transform;
+        if (objekTamperKopi == null) objekTamperKopi = GameObject.FindWithTag("AlatTamper")?.transform;
+        if (objekMesinEspresso == null) objekMesinEspresso = GameObject.FindWithTag("MesinEspresso")?.transform;
+        if (objekEsBatu == null) objekEsBatu = GameObject.FindWithTag("CoolerBox")?.transform;
+        if (objekPiringSaji == null) objekPiringSaji = GameObject.FindWithTag("PiringSaji")?.transform;
+        if (objekGula == null) objekGula = GameObject.FindWithTag("ToplesGula")?.transform;
+
+        // --- 3. CARI UI MONITOR KASIR (BARU) ---
+
+        // Cari Panel Background/Canvas-nya
+        if (panelCanvasResep == null)
+        {
+            // GANTI "CanvasResep" dengan nama objek panel lu di Hierarchy
+            GameObject panelObj = GameObject.Find("CanvasResep");
+            if (panelObj != null) panelCanvasResep = panelObj;
+        }
+
+        // Cari Teks-nya (karena ini komponen UGUI, kita harus get component)
+        if (textResepTunggal == null)
+        {
+            // GANTI "TextResepMonitor" dengan nama objek teks resep lu di Hierarchy
+            GameObject teksObj = GameObject.Find("TextResepMonitor");
+            if (teksObj != null) textResepTunggal = teksObj.GetComponent<TextMeshProUGUI>();
+        }
+
+        // Tetap sembunyikan UI resep di awal
+        if (textResepTunggal != null)
+        {
+            textResepTunggal.text = "Menunggu pelanggan berikutnya...";
+        }
 
         Invoke("GenerateRandomOrder", 1.0f);
     }
@@ -234,8 +272,19 @@ public class SistemPelanggan : MonoBehaviour
     {
         sedangKeluar = true;
 
+        // Tunggu pelanggan selesai ngomong "Thank You"
         yield return new WaitForSeconds(1.5f);
 
+        // --- TAMBAHAN BARU: RESET POSISI SEMUA ALAT ---
+        // Kode ini akan mencari semua alat di meja yang punya script "KembaliKeAwal" 
+        // lalu menyuruh mereka balik ke posisi aslinya.
+        KembaliKeAwal[] semuaAlat = UnityEngine.Object.FindObjectsByType<KembaliKeAwal>(FindObjectsSortMode.None);
+        foreach (KembaliKeAwal alat in semuaAlat)
+        {
+            alat.ResetBarang();
+        }
+
+        // Pelanggan jalan ke titik keluar
         if (titikKeluar != null)
         {
             while (Vector3.Distance(transform.position, titikKeluar.position) > 0.1f)
@@ -253,7 +302,7 @@ public class SistemPelanggan : MonoBehaviour
 
         if (spawner != null)
         {
-            spawner.HitungSelesai(); 
+            spawner.HitungSelesai();
         }
 
         Destroy(gameObject);

@@ -4,43 +4,42 @@ using System.Collections;
 public class GelasKopi : MonoBehaviour
 {
     [Header("Visual Air Kopi")]
-    public Transform pivotAirKopi; // Masukkan objek 'PivotAir' ke sini
-
-    // VARIABEL BARU: Untuk memegang komponen 'mata' si air
+    public Transform pivotAirKopi;
     private MeshRenderer rendererAir;
 
-    [Header("Pengaturan Pengisian")]
-    public float targetPenuhY = 1f; // Target tinggi scale Y saat penuh
-    public float durasiIsi = 3f;    // Waktu pengisian (detik)
+    [Header("Visual Es Batu")]
+    public GameObject visualEsBatu;
+    public bool sudahAdaEs = false;
 
-    private bool sedangIsi = false; // Mencegah isi ulang pas lagi proses
+    [Header("Visual & Data Gula")]
+    public int jumlahScoopGula = 0;
+
+    [Header("Pengaturan Pengisian")]
+    public float targetPenuhY = 1f;
+    public float durasiIsi = 3f;
+
+    public bool sedangIsi = false;
     public bool sudahPenuh = false;
 
     void Start()
     {
-        // 1. Ambil komponen MeshRenderer dari objek 'VisualKopiHitam'
-        // Kita cari komponen MeshRenderer yang ada di anak (child) objek 'pivotAirKopi'
         rendererAir = pivotAirKopi.GetComponentInChildren<MeshRenderer>();
+        if (rendererAir != null) rendererAir.enabled = false;
 
-        if (rendererAir != null)
-        {
-            // 2. Matikan 'mata'-nya di awal game. Air jadi gaib.
-            rendererAir.enabled = false;
-        }
-        else
-        {
-            Debug.LogError("Gagal menemukan MeshRenderer di anak objek PivotAir!");
-        }
-
-        // 3. Kempeskan airnya (Scale Y jadi 0)
         Vector3 skalaAwal = pivotAirKopi.localScale;
         skalaAwal.y = 0f;
         pivotAirKopi.localScale = skalaAwal;
+
+        if (visualEsBatu != null) visualEsBatu.SetActive(false);
+
+        sudahAdaEs = false;
+        jumlahScoopGula = 0;
+        sedangIsi = false;
+        sudahPenuh = false;
     }
 
     public void MulaiIsiAir()
     {
-        // Cek dulu, jangan sampe gelas yang udah penuh diisi lagi
         if (!sedangIsi && !sudahPenuh)
         {
             StartCoroutine(ProsesIsi());
@@ -50,14 +49,9 @@ public class GelasKopi : MonoBehaviour
     private IEnumerator ProsesIsi()
     {
         sedangIsi = true;
-        Debug.Log("Mesin menyala! Mengisi kopi ke gelas...");
+        Debug.Log("Mesin menyala! Mengisi kopi...");
 
-        // 4. NYALAKAN KEMBALI 'mata'-nya sebelum animasi mulai.
-        // Air jadi kelihatan lagi, tapi ukurannya masih 0.
-        if (rendererAir != null)
-        {
-            rendererAir.enabled = true;
-        }
+        if (rendererAir != null) rendererAir.enabled = true;
 
         float waktu = 0;
         Vector3 skalaTarget = new Vector3(pivotAirKopi.localScale.x, targetPenuhY, pivotAirKopi.localScale.z);
@@ -66,8 +60,6 @@ public class GelasKopi : MonoBehaviour
         {
             waktu += Time.deltaTime;
             float persentase = waktu / durasiIsi;
-
-            // Animasi scale naik dari 0 ke targetPenuhY
             pivotAirKopi.localScale = Vector3.Lerp(new Vector3(skalaTarget.x, 0f, skalaTarget.z), skalaTarget, persentase);
             yield return null;
         }
@@ -76,22 +68,102 @@ public class GelasKopi : MonoBehaviour
         sedangIsi = false;
         Debug.Log("Gelas Penuh!");
 
-        // Panggil Tutorial Manager kalau kamu pakai!
+        // --- CEK APAKAH PERLU SKIP STEP GULA ---
         if (TutorialManager.instance != null)
         {
-            TutorialManager.instance.LaporSelesai(5);
+            SistemPelanggan pelanggan = Object.FindAnyObjectByType<SistemPelanggan>();
+            if (pelanggan != null && pelanggan.gulaDipesan == SistemPelanggan.LevelGula.NoSugar)
+            {
+                Debug.Log("[GelasKopi] Pesanan No Sugar. Skip ke langkah selanjutnya.");
+                TutorialManager.instance.InteractObjek(); // Lanjut ke Es atau Plate
+            }
+            else
+            {
+                TutorialManager.instance.InteractObjek(); // Lanjut ke perintah isi gula
+            }
         }
     }
 
-    // Fungsi untuk membuang air kopi dan mereset gelas
+    private void OnTriggerEnter(Collider other)
+    {
+        // A. DETEKSI COOLER BOX
+        if (other.CompareTag("CoolerBox") && sudahPenuh && !sudahAdaEs)
+        {
+            if (TutorialManager.instance != null)
+            {
+                string teksTV = TutorialManager.instance.teksTutorial.text;
+                if (teksTV.Contains("Es Batu") || teksTV.Contains("Cooler"))
+                {
+                    TambahEsBatu();
+                }
+            }
+        }
+
+        // B. DETEKSI SENDOK (Gunakan .Contains agar tidak perlu daftar Tag baru)
+        if (other.name.Contains("Sendok") || other.name.Contains("Spoon"))
+        {
+            if (TutorialManager.instance != null)
+            {
+                string teksTV = TutorialManager.instance.teksTutorial.text;
+                if (teksTV.Contains("gula") || teksTV.Contains("Scoop"))
+                {
+                    TambahGula();
+                }
+            }
+        }
+    }
+
+    private void TambahEsBatu()
+    {
+        if (visualEsBatu != null)
+        {
+            visualEsBatu.SetActive(true);
+            sudahAdaEs = true;
+            Debug.Log("GelasKopi: Es Batu masuk!");
+
+            if (TutorialManager.instance != null)
+            {
+                TutorialManager.instance.InteractObjek();
+            }
+        }
+    }
+
+    public void TambahGula()
+    {
+        SistemPelanggan pelanggan = Object.FindAnyObjectByType<SistemPelanggan>();
+        if (pelanggan == null) return;
+
+        // Jika No Sugar, jangan tambahkan apapun
+        if (pelanggan.gulaDipesan == SistemPelanggan.LevelGula.NoSugar) return;
+
+        int targetScoop = 0;
+        if (pelanggan.gulaDipesan == SistemPelanggan.LevelGula.LessSugar) targetScoop = 1;
+        else if (pelanggan.gulaDipesan == SistemPelanggan.LevelGula.NormalSugar) targetScoop = 2;
+        else if (pelanggan.gulaDipesan == SistemPelanggan.LevelGula.ExtraSugar) targetScoop = 3;
+
+        jumlahScoopGula++;
+        Debug.Log($"[GelasKopi] Gula Masuk: {jumlahScoopGula}/{targetScoop} Scoop.");
+
+        if (jumlahScoopGula == targetScoop)
+        {
+            if (TutorialManager.instance != null)
+            {
+                TutorialManager.instance.InteractObjek();
+                Debug.Log("[GelasKopi] Takaran gula pas! TV maju.");
+            }
+        }
+    }
+
     public void KosongkanGelas()
     {
         sudahPenuh = false;
         sedangIsi = false;
+        sudahAdaEs = false;
+        jumlahScoopGula = 0;
 
-        if (rendererAir != null) rendererAir.enabled = false; // Matikan visual air
+        if (rendererAir != null) rendererAir.enabled = false;
+        if (visualEsBatu != null) visualEsBatu.SetActive(false);
 
-        // Kempeskan ukurannya jadi 0 lagi
         Vector3 skalaAwal = pivotAirKopi.localScale;
         skalaAwal.y = 0f;
         pivotAirKopi.localScale = skalaAwal;

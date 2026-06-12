@@ -117,10 +117,12 @@ public class EfekTamping : MonoBehaviour
 
         Debug.Log("Tamping Selesai! Kopi sudah padat dan Tamper kembali ke meja.");
 
-        // (Opsional) Lapor ke Tutorial Manager
+        // Ganti baris yang ada angka "3"-nya dengan ini:
         if (TutorialManager.instance != null)
         {
-            TutorialManager.instance.LaporSelesai(3);
+            // INI KUNCI SAKTINYA: Dia bakal maju ke langkah BERIKUTNYA 
+            // tanpa perlu lu kasih tahu angkanya berapa!
+            TutorialManager.instance.InteractObjek();
         }
     }
 

@@ -4,50 +4,41 @@ using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 public class PiringSaji : MonoBehaviour
 {
-    public XRSocketInteractor socketPiring; // Tarik SocketCupFilled ke sini
-    public SistemPelanggan pelanggan;       // Tarik objek Pelanggan ke sini
+    public XRSocketInteractor socketPiring;
 
-    public void CekPesananMasuk()
+    void Start()
     {
-        if (socketPiring.hasSelection)
+        if (socketPiring == null) socketPiring = GetComponent<XRSocketInteractor>();
+        socketPiring.selectEntered.AddListener(OnGelasSuksesNempel);
+    }
+
+    private void OnGelasSuksesNempel(SelectEnterEventArgs args)
+    {
+        GameObject objekGelas = args.interactableObject.transform.gameObject;
+        SistemPelanggan pelanggan = Object.FindAnyObjectByType<SistemPelanggan>();
+
+        if (pelanggan != null)
         {
-            // Ambil data gelas yang ditaruh di piring
-            GameObject objekGelas = socketPiring.firstInteractableSelected.transform.gameObject;
-            GelasKopi scriptGelas = objekGelas.GetComponent<GelasKopi>();
+            pelanggan.TerimaSajianKopi(objekGelas);
 
-            // Cek: Apakah itu beneran gelas? DAN Apakah kopinya penuh?
-            if (scriptGelas != null && scriptGelas.sudahPenuh)
-            {
-                Debug.Log("Pesanan disajikan!");
+            // RESET OTOMATIS BERDASARKAN TAG ASLI
+            ResetObjekBerdasarkanTag("Cup");
+            ResetObjekBerdasarkanTag("Portafilter");
 
-                // 1. Pelanggan bilang terima kasih
-                if (pelanggan != null) pelanggan.PesananSelesai();
-
-                // 2. Lepas paksa gelas dari genggaman socket piring (biar gak nyangkut pas di-reset)
-                socketPiring.enabled = false;
-
-                // 3. Kosongkan isi gelas
-                scriptGelas.KosongkanGelas();
-
-                // 4. Terbangkan gelas balik ke tempat asal
-                KembaliKeAwal resetScript = objekGelas.GetComponent<KembaliKeAwal>();
-                if (resetScript != null)
-                {
-                    resetScript.ResetBarang();
-                }
-
-                // 5. Nyalakan lagi socket piringnya sedetik kemudian untuk pesanan berikutnya
-                Invoke("NyalakanSocket", 1f);
-            }
-            else
-            {
-                Debug.LogWarning("Ditolak! Gelas masih kosong atau salah barang.");
-            }
+            socketPiring.enabled = false;
+            Invoke("NyalakanSocketPenuh", 1f);
         }
     }
 
-    private void NyalakanSocket()
+    private void ResetObjekBerdasarkanTag(string namaTag)
     {
-        socketPiring.enabled = true;
+        GameObject[] daftarObjek = GameObject.FindGameObjectsWithTag(namaTag);
+        foreach (GameObject obj in daftarObjek)
+        {
+            KembaliKeAwal resetter = obj.GetComponent<KembaliKeAwal>();
+            if (resetter != null) resetter.ResetBarang();
+        }
     }
+
+    private void NyalakanSocketPenuh() { socketPiring.enabled = true; }
 }

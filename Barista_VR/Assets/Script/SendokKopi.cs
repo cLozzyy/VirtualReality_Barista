@@ -2,47 +2,73 @@ using UnityEngine;
 
 public class SendokKopi : MonoBehaviour
 {
-    [Header("Visual Kopi di Sendok")]
-    public GameObject gundukanKopi;
-    public bool isIsiKopi = false;
+    public enum IsiSendok { Kosong, Kopi, Gula }
 
-    // Fungsi ini dipanggil otomatis saat sendok menyentuh area Trigger apapun
+    [Header("Visual di Sendok")]
+    public GameObject gundukanKopi;
+    public GameObject gundukanGula;
+
+    [Header("Status Sendok")]
+    public IsiSendok statusSekarang = IsiSendok.Kosong;
+
+    private void Start()
+    {
+        if (gundukanKopi != null) gundukanKopi.SetActive(false);
+        if (gundukanGula != null) gundukanGula.SetActive(false);
+        statusSekarang = IsiSendok.Kosong;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        // 1. JIKA NYENTUH TOPLES & SENDOK KOSONG -> Ambil Kopi
-        if (other.CompareTag("ToplesKopi") && !isIsiKopi)
+        // 1. AMBIL BAHAN
+        if (statusSekarang == IsiSendok.Kosong)
         {
-            AmbilKopi();
+            if (other.CompareTag("ToplesKopi")) AmbilBahan(IsiSendok.Kopi);
+            else if (other.CompareTag("ToplesGula")) AmbilBahan(IsiSendok.Gula);
         }
-        // 2. JIKA NYENTUH PORTAFILTER & SENDOK ADA ISINYA -> Tuang Kopi
-        else if (other.CompareTag("Portafilter") && isIsiKopi)
+        // 2. TUANG BAHAN
+        else
         {
-            // Langsung tuang tanpa perlu dimiringkan
-            TuangKopi(other.gameObject);
+            // Tuang Kopi ke Portafilter
+            if (statusSekarang == IsiSendok.Kopi && other.CompareTag("Portafilter"))
+            {
+                TuangKopi(other.gameObject);
+            }
+            // Tuang Gula ke Gelas (Ganti CompareTag dengan pengecekan Script GelasKopi)
+            else if (statusSekarang == IsiSendok.Gula)
+            {
+                GelasKopi gelas = other.GetComponent<GelasKopi>();
+                if (gelas != null) TuangGula(gelas);
+            }
         }
     }
 
-    private void AmbilKopi()
+    private void AmbilBahan(IsiSendok bahanBaru)
     {
-        gundukanKopi.SetActive(true);
-        isIsiKopi = true;
-        Debug.Log("Berhasil ambil kopi dari toples!");
+        statusSekarang = bahanBaru;
+        gundukanKopi.SetActive(bahanBaru == IsiSendok.Kopi);
+        gundukanGula.SetActive(bahanBaru == IsiSendok.Gula);
+        Debug.Log("Sendok: Berhasil mengambil " + bahanBaru);
     }
 
     private void TuangKopi(GameObject areaTuang)
     {
         gundukanKopi.SetActive(false);
-        isIsiKopi = false;
+        statusSekarang = IsiSendok.Kosong;
 
         PortafilterKopi pf = areaTuang.GetComponent<PortafilterKopi>();
+        if (pf != null) pf.TerimaKopi();
+    }
 
-        if (pf != null)
-        {
-            pf.TerimaKopi();
-        }
-        else
-        {
-            Debug.LogWarning("Script PortafilterKopi tidak ditemukan di objek: " + areaTuang.name);
-        }
+    private void TuangGula(GelasKopi gelas)
+    {
+        // Matikan visual & kosongkan status sendok
+        gundukanGula.SetActive(false);
+        statusSekarang = IsiSendok.Kosong;
+
+        // PANGGIL FUNGSI TAMBAH GULA DI GELAS KOPI
+        gelas.TambahGula();
+
+        Debug.Log("Sendok: Gula berhasil dituang ke gelas!");
     }
 }

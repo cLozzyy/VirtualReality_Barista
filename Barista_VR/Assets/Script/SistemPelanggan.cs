@@ -34,18 +34,20 @@ public class SistemPelanggan : MonoBehaviour
     public bool pesananSelesai = false;
     private bool sudahPesan = false;
 
-    [Header("KODE AWAL: Pergerakan ke Kasir")]
+    [Header("Navigasi Pelanggan")]
     public Transform titikKasir;
+    public Transform titikKeluar;
     public float kecepatanJalan = 2f;
     private bool sudahSampaiKasir = false;
+    private bool sedangKeluar = false;
 
     void Start()
     {
         pesananSelesai = false;
         sudahSampaiKasir = false;
         sudahPesan = false;
+        sedangKeluar = false;
 
-        // Cari titik kasir jika belum ada
         if (titikKasir == null)
         {
             GameObject go = GameObject.FindWithTag("TitikKasir");
@@ -54,20 +56,19 @@ public class SistemPelanggan : MonoBehaviour
 
         if (panelCanvasResep != null) panelCanvasResep.SetActive(false);
 
-        // Langsung panggil GenerateOrder setelah sedikit jeda agar tidak crash
         Invoke("GenerateRandomOrder", 1.0f);
     }
 
     void Update()
     {
-        if (titikKasir != null && !sudahSampaiKasir)
+        if (titikKasir != null && !sudahSampaiKasir && !sedangKeluar)
         {
             transform.position = Vector3.MoveTowards(transform.position, titikKasir.position, kecepatanJalan * Time.deltaTime);
+            transform.LookAt(new Vector3(titikKasir.position.x, transform.position.y, titikKasir.position.z));
 
             if (Vector3.Distance(transform.position, titikKasir.position) < 0.1f)
             {
                 sudahSampaiKasir = true;
-                Debug.Log("[Sistem Pelanggan] Sudah sampai di depan kasir.");
             }
         }
     }
@@ -113,12 +114,9 @@ public class SistemPelanggan : MonoBehaviour
         teksTVDinamis.Add("Ambil Portafilter dan letakkan di atas timbangan.");
         ruteGlitterDinamis.Add(objekPortafilter);
 
-        // --- STEP DIGABUNG ---
-        // Step 1: Ambil sendok DAN langsung scoop kopi
         teksTVDinamis.Add("Ambil sendok, ambil bubuk kopi, dan tuang ke Portafilter hingga 15g.");
         ruteGlitterDinamis.Add(objekSendokKopi);
 
-        // Step 2: Tamper
         teksTVDinamis.Add("Ambil Tamper, tekan bubuk kopi di dalam Portafilter hingga padat rata.");
         ruteGlitterDinamis.Add(objekTamperKopi);
 
@@ -128,7 +126,6 @@ public class SistemPelanggan : MonoBehaviour
         teksTVDinamis.Add("Nyalakan mesin espresso dan tunggu sampai gelas terisi penuh dengan kopi.");
         ruteGlitterDinamis.Add(objekMesinEspresso);
 
-        // --- URUTAN BARU 1: GULA DIMINTA DULUAN SETELAH KOPI PENUH ---
         if (gulaDipesan != LevelGula.NoSugar)
         {
             int jumlahScoopGula = 0;
@@ -140,14 +137,12 @@ public class SistemPelanggan : MonoBehaviour
             ruteGlitterDinamis.Add(objekGula);
         }
 
-        // --- URUTAN BARU 2: ES BATU DIMINTA SETELAH GULA ---
         if (kopiDipesan == TipeKopi.IceAmericano)
         {
             teksTVDinamis.Add("Sentuhan terakhir! Bawa gelas tersebut dan dekatkan ke arah Cooler Box untuk menambahkan Es Batu.");
             ruteGlitterDinamis.Add(objekEsBatu);
         }
 
-        // --- TERAKHIR: SAJIKAN ---
         teksTVDinamis.Add("Sempurna! Sekarang bawa gelas kopi yang sudah lengkap rasanya ke Piring Saji (Plate) depan pelanggan.");
         ruteGlitterDinamis.Add(objekPiringSaji);
 
@@ -178,7 +173,6 @@ public class SistemPelanggan : MonoBehaviour
         GelasKopi scriptGelas = objekGelas.GetComponent<GelasKopi>();
         if (scriptGelas == null) return;
 
-        Debug.Log("Customer: Mantap! Gelas masuk piring saji dengan komposisi sempurna!");
         pesananSelesai = true;
         sudahPesan = false;
 
@@ -191,10 +185,12 @@ public class SistemPelanggan : MonoBehaviour
 
         if (TutorialManager.instance != null)
         {
-            TutorialManager.instance.InteractObjek(); // Selesaikan step terakhir
+            TutorialManager.instance.InteractObjek(); 
         }
 
         if (panelCanvasResep != null) panelCanvasResep.SetActive(false);
+
+        SelesaikanPesanan();
     }
 
     private void UpdateVisualResep()
@@ -216,7 +212,6 @@ public class SistemPelanggan : MonoBehaviour
         string totalKalimatResep = "MENU: " + namaMenu + infoGula + "\n\nResep Pembuatan:\n";
         totalKalimatResep += "- Grind kopi & tuang ke Portafilter (15g)\n- Tekan menggunakan Tamper\n- Ekstrak espresso pake mesin\n";
 
-        // Ubah urutan di UI Kasir biar sesuai sama TV
         switch (gulaDipesan)
         {
             case LevelGula.NoSugar: totalKalimatResep += "- Gula: 0 Scoop (No Sugar)\n"; break;
@@ -230,7 +225,6 @@ public class SistemPelanggan : MonoBehaviour
         textResepTunggal.text = totalKalimatResep;
     }
 
-    // Tambahkan di SistemPelanggan.cs
     public void SelesaikanPesanan()
     {
         StartCoroutine(ProsesKeluar());
@@ -238,26 +232,30 @@ public class SistemPelanggan : MonoBehaviour
 
     private IEnumerator ProsesKeluar()
     {
-        // 1. Bilang terima kasih
-        if (teksBalonPelanggan != null) teksBalonPelanggan.text = "Terima kasih!";
+        sedangKeluar = true;
+
         yield return new WaitForSeconds(1.5f);
 
-        // 2. Jalan ke Titik Keluar (Tambahkan logika ini jika ingin dia jalan balik)
-        // Pastikan lu sudah set 'titikKeluar' di Inspector prefab Pelanggan
-        // Jika tidak ada titik keluar, dia akan langsung hilang.
-
-        // 3. Panggil Spawner (SANGAT PENTING)
-        if (spawner != null)
+        if (titikKeluar != null)
         {
-            spawner.HitungSelesai(); // Ini yang memicu pelanggan berikutnya
+            while (Vector3.Distance(transform.position, titikKeluar.position) > 0.1f)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, titikKeluar.position, kecepatanJalan * Time.deltaTime);
+                transform.LookAt(new Vector3(titikKeluar.position.x, transform.position.y, titikKeluar.position.z));
+                yield return null;
+            }
         }
 
-        // 4. Reset Tutorial
         if (TutorialManager.instance != null)
         {
             TutorialManager.instance.ResetTutorial();
         }
 
-        gameObject.SetActive(false);
+        if (spawner != null)
+        {
+            spawner.HitungSelesai(); 
+        }
+
+        Destroy(gameObject);
     }
 }

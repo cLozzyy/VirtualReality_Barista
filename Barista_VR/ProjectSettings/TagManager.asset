@@ -12,6 +12,7 @@ TagManager:
   - CoolerBox
   - Timbangan
   - Cup
+  - TitikKasir
   layers:
   - Default
   - TransparentFX
